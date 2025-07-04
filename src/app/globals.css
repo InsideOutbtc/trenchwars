@@ -1,8 +1,33 @@
 @import "tailwindcss";
 
+/* 🔥 SCHIZO THEME SYSTEM - MAXIMUM CHAOS 🔥 */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Schizo Core Palette */
+  --schizo-bg: #0A0A0A;
+  --schizo-bg-secondary: #111111;
+  --schizo-fg: #FFFFFF;
+  --schizo-green: #00FF88;
+  --schizo-red: #FF0040;
+  --schizo-blue: #0080FF;
+  --schizo-yellow: #FFD700;
+  --schizo-purple: #8B00FF;
+  
+  /* Gradient Chaos */
+  --schizo-gradient-win: linear-gradient(45deg, #00FF88, #00FFFF);
+  --schizo-gradient-lose: linear-gradient(45deg, #FF0040, #FF4000);
+  --schizo-gradient-neutral: linear-gradient(45deg, #0080FF, #8B00FF);
+  --schizo-gradient-chaos: linear-gradient(45deg, #FF0040, #00FF88, #0080FF, #FFD700);
+  
+  /* Glitch Variables */
+  --glitch-offset: 2px;
+  --glitch-duration: 0.3s;
+  
+  /* Battle Variables */
+  --battle-pulse: pulse 1.5s infinite;
+  --chaos-shake: shake 0.5s infinite;
+  
+  --background: var(--schizo-bg);
+  --foreground: var(--schizo-fg);
 }
 
 @theme inline {
@@ -12,15 +37,229 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* 🎯 SCHIZO ANIMATIONS - CONTROLLED CHAOS 🎯 */
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
 }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes neon-glow {
+  0%, 100% { box-shadow: 0 0 5px currentColor; }
+  50% { box-shadow: 0 0 20px currentColor, 0 0 30px currentColor; }
+}
+
+@keyframes battle-ready {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes number-pump {
+  0% { transform: scale(1); color: var(--schizo-green); }
+  50% { transform: scale(1.2); color: #00FFFF; }
+  100% { transform: scale(1); color: var(--schizo-green); }
+}
+
+@keyframes number-dump {
+  0% { transform: scale(1); color: var(--schizo-red); }
+  50% { transform: scale(0.8); color: #FF6666; }
+  100% { transform: scale(1); color: var(--schizo-red); }
+}
+
+/* 💀 SCHIZO UTILITY CLASSES 💀 */
+.schizo-text-glow {
+  text-shadow: 0 0 10px currentColor;
+  animation: neon-glow 2s infinite;
+}
+
+.schizo-pulse {
+  animation: var(--battle-pulse);
+}
+
+.schizo-shake {
+  animation: var(--chaos-shake);
+}
+
+.schizo-glitch {
+  animation: glitch 0.3s infinite;
+}
+
+.schizo-bg-chaos {
+  background: var(--schizo-gradient-chaos);
+  background-size: 400% 400%;
+  animation: battle-ready 3s ease infinite;
+}
+
+.schizo-border-battle {
+  border: 2px solid;
+  border-image: var(--schizo-gradient-chaos) 1;
+  border-image-slice: 1;
+}
+
+.schizo-pump {
+  animation: number-pump 0.5s ease;
+}
+
+.schizo-dump {
+  animation: number-dump 0.5s ease;
+}
+
+/* 🔥 BUTTON CHAOS SYSTEM 🔥 */
+.btn-send-it {
+  background: var(--schizo-gradient-win);
+  color: #000;
+  font-weight: 900;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-send-it:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px var(--schizo-green);
+  animation: var(--battle-pulse);
+}
+
+.btn-send-it:active {
+  animation: var(--chaos-shake);
+}
+
+.btn-rekt {
+  background: var(--schizo-gradient-lose);
+  color: #fff;
+  font-weight: 900;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 🎮 BATTLE CARD CHAOS 🎮 */
+.battle-card {
+  background: var(--schizo-bg-secondary);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.battle-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: var(--schizo-gradient-chaos);
+  background-size: 400% 400%;
+  animation: battle-ready 3s ease infinite;
+  border-radius: 12px;
+  z-index: -1;
+}
+
+.battle-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+}
+
+/* 🚀 WOJAK REACTIONS SYSTEM 🚀 */
+.wojak-container {
+  position: relative;
+  display: inline-block;
+}
+
+.wojak-massive-gains::after {
+  content: "😎";
+  position: absolute;
+  font-size: 2rem;
+  top: -10px;
+  right: -10px;
+  animation: var(--battle-pulse);
+}
+
+.wojak-gains::after {
+  content: "😊";
+  position: absolute;
+  font-size: 1.5rem;
+  top: -5px;
+  right: -5px;
+}
+
+.wojak-neutral::after {
+  content: "😐";
+  position: absolute;
+  font-size: 1.2rem;
+  top: 0;
+  right: 0;
+}
+
+.wojak-losses::after {
+  content: "😰";
+  position: absolute;
+  font-size: 1.5rem;
+  top: -5px;
+  right: -5px;
+  animation: var(--chaos-shake);
+}
+
+.wojak-rekt::after {
+  content: "😭";
+  position: absolute;
+  font-size: 2rem;
+  top: -10px;
+  right: -10px;
+  animation: var(--chaos-shake);
+}
+
+/* 🐸 PEPE INTEGRATION SYSTEM 🐸 */
+.pepe-happy::before { content: "🐸"; }
+.pepe-sad::before { content: "😢"; }
+.pepe-smug::before { content: "😏"; }
+.pepe-confused::before { content: "🤔"; }
+.pepe-angry::before { content: "😠"; }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Courier New', monospace;
+  overflow-x: hidden;
+}
+
+/* 💥 CHAOS GRID BACKGROUND 💥 */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  z-index: -1;
+  opacity: 0.3;
 }

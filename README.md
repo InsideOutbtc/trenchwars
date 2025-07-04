@@ -1,74 +1,104 @@
 # ⚔️ TrenchWars - Token Battle Arena
 
-A Polymarket-style prediction market on Solana where users bet on which crypto project will perform better over specified time periods. Built with Next.js, Express.js, and Solana smart contracts.
+**🔗 Live at: [trenchwars.wtf](https://trenchwars.wtf)**
 
-## ✨ Features
+A revolutionary Polymarket-style prediction market on Solana where crypto communities battle it out in epic token wars. Users bet on which cryptocurrency will perform better over specified time periods, creating an engaging and competitive trading experience.
 
-- **⚔️ Token Battles**: Community-created wars between competing cryptocurrencies
-- **💰 SOL Betting**: Place bets using Solana (SOL) cryptocurrency  
-- **📊 Real-time Data**: Live price feeds and market data from CoinGecko
-- **🏆 Leaderboards**: Track top performers and betting statistics
-- **🔗 Wallet Integration**: Connect with Phantom, Solflare, and other Solana wallets
-- **📱 Responsive Design**: Works seamlessly on desktop and mobile
+## 🎮 **Live Platform Features**
 
-## 🎯 Current Status: MVP Complete ✅
+- **⚔️ Epic Token Battles**: Community-created wars between competing cryptocurrencies
+- **💰 Solana Integration**: Real SOL betting with instant payouts via smart contracts
+- **📊 Live Market Data**: Real-time price feeds and comprehensive market analytics
+- **👤 User Profiles**: Wallet-based profiles with achievements and statistics
+- **🏆 Global Leaderboards**: Track top performers and betting champions
+- **🔗 Multi-Wallet Support**: Phantom, Solflare, and other Solana wallets
+- **📱 Mobile-First Design**: Optimized for all devices and screen sizes
+- **🌐 Social Integration**: Twitter sentiment analysis and trending data
+- **🎯 Market Creation**: Users can propose and create new token battles
 
-The application is fully functional with all core features implemented. Ready for testing and deployment!
+## 🚀 **Platform Status: LIVE & PRODUCTION-READY** ✅
 
-## 🚀 Quick Start
+**🌐 Live URLs:**
+- **Frontend**: [https://trenchwars.wtf](https://trenchwars.wtf)
+- **API**: [https://api.trenchwars.wtf](https://api.trenchwars.wtf)
+- **Smart Contract**: `7KK67M12SbodyTKSetMjMeCWBiDNvB817dkWWvueRbYG` (Solana Devnet)
+
+## 🎯 **How to Play TrenchWars**
+
+1. **Visit [trenchwars.wtf](https://trenchwars.wtf)**
+2. **Connect your Solana wallet** (Phantom, Solflare, etc.)
+3. **Browse active token battles** (PEPE vs SHIB, DOGE vs WIF, etc.)
+4. **Place your bets** using SOL cryptocurrency
+5. **Track your performance** in your user profile
+6. **Create new wars** and challenge the community
+7. **Climb the leaderboards** and earn achievements
+
+## 🛠️ **Local Development Setup**
 
 ### Prerequisites
 - Node.js 18+ 
 - PostgreSQL 14+
+- Solana CLI (for smart contract development)
 
-### Local Development
+### Quick Setup
+```bash
+# Clone the repository
+git clone https://github.com/insideoutbtc/trenchwars.git
+cd trenchwars
 
-1. **Install dependencies**
-   ```bash
-   # Frontend
-   npm install
-   
-   # Backend  
-   cd backend
-   npm install
-   cd ..
-   ```
+# Install dependencies
+npm install
+cd backend && npm install && cd ..
 
-2. **Set up environment variables**
-   ```bash
-   cp .env.example .env.local
-   # Edit .env.local with your configuration
-   ```
+# Set up environment
+cp .env.example .env.local
 
-3. **Start development servers**
-   ```bash
-   # Frontend (Terminal 1)
-   npm run dev
-   
-   # Backend (Terminal 2)
-   cd backend
-   npm run dev
-   ```
+# Start development servers
+npm run dev              # Frontend (localhost:3000)
+cd backend && npm run dev # Backend (localhost:3001)
+```
 
-4. **Access the application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:3001
+### Environment Configuration
+```bash
+# Frontend (.env.local)
+NEXT_PUBLIC_API_URL=http://localhost:3001/api
+NEXT_PUBLIC_SOLANA_NETWORK=devnet
+NEXT_PUBLIC_SOLANA_RPC_URL=https://api.devnet.solana.com
 
-## 🏗️ Architecture
+# Backend (.env)
+FRONTEND_URL=http://localhost:3000
+DATABASE_URL=postgresql://user:password@localhost/trenchwars_dev
+TWITTER_BEARER_TOKEN=your_twitter_token
+```
 
-### Frontend (Next.js 15)
-- Next.js with App Router and TypeScript
-- Tailwind CSS for styling
-- Solana Web3.js and Wallet Adapter
-- Real-time data with custom React hooks
+## 🏗️ **Production Architecture**
 
-### Backend (Express.js)
-- RESTful API with Express.js
-- PostgreSQL database
-- CoinGecko API integration
-- Automated price tracking
+### **Frontend Stack**
+- **Framework**: Next.js 15 with App Router & TypeScript
+- **Styling**: Tailwind CSS with custom components
+- **Blockchain**: Solana Web3.js + Wallet Adapter
+- **State Management**: Custom React hooks + real-time updates
+- **Deployment**: Vercel with custom domain
+- **CDN**: Global edge network for optimal performance
 
-### Blockchain (Solana)
-- Anchor framework smart contracts
-- Automated betting and payout logic
-- 3% platform fee structure
+### **Backend Stack** 
+- **API**: Express.js with TypeScript + RESTful endpoints
+- **Database**: PostgreSQL with optimized queries
+- **External APIs**: DexScreener (prices) + Twitter API (social data)
+- **Deployment**: Render with auto-scaling
+- **Security**: Rate limiting, CORS, input validation
+
+### **Blockchain Infrastructure**
+- **Platform**: Solana (Devnet → Mainnet ready)
+- **Framework**: Anchor for smart contract development
+- **Contract Features**: 
+  - Automated betting and payout logic
+  - Escrow system for secure fund handling
+  - 3% platform fee with buyback mechanism
+  - Emergency pause functionality
+
+### **Key Integrations**
+- **Price Data**: DexScreener WebSocket for real-time prices
+- **Social Metrics**: Twitter API v2 for sentiment analysis
+- **Wallets**: Phantom, Solflare, Backpack, and more
+- **Analytics**: Built-in user statistics and achievements

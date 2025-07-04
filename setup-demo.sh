@@ -3,14 +3,17 @@
 echo "⚔️ Setting up TrenchWars Demo"
 echo "=============================="
 
-# Create demo environment file
+# Create demo environment file (for local development)
 cat > .env.local << EOL
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
 NEXT_PUBLIC_SOLANA_NETWORK=devnet
 NEXT_PUBLIC_SOLANA_RPC_URL=https://api.devnet.solana.com
+
+# For production, use:
+# NEXT_PUBLIC_API_URL=https://api.trenchwars.wtf/api
 EOL
 
-# Create backend environment file
+# Create backend environment file (for local development)
 cat > backend/.env << EOL
 PORT=3001
 NODE_ENV=development
@@ -26,6 +29,8 @@ DB_PASSWORD=demo123
 # API Keys (optional for demo)
 COINGECKO_API_KEY=
 TWITTER_BEARER_TOKEN=
+
+# Production backend is live at: https://api.trenchwars.wtf
 EOL
 
 echo "✅ Environment files created"

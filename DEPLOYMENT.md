@@ -17,34 +17,36 @@
    - Vercel will automatically build and deploy
    - Uses the vercel.json configuration
 
-## Backend (Railway/Custom Server)
+## Backend (Render - LIVE)
 
-1. **Connect Repository**
-   - Connect GitHub repo to Railway/hosting provider
-   - Deploy from `/backend` directory
+1. **✅ Connected Repository**
+   - GitHub repo connected to Render
+   - Deployed from `/backend` directory
+   - Live at: `https://api.trenchwars.wtf`
 
-2. **Configure Environment Variables**
+2. **✅ Environment Variables Configured**
    ```
    PORT=3001
    NODE_ENV=production
    FRONTEND_URL=https://trenchwars.wtf
    
-   # Database (Railway PostgreSQL)
+   # Database (Production PostgreSQL)
    DATABASE_URL=postgresql://user:password@host:port/dbname
    
-   # Optional API Keys
-   COINGECKO_API_KEY=your_key_here
-   TWITTER_BEARER_TOKEN=your_token_here
+   # API Keys (configured)
+   COINGECKO_API_KEY=configured
+   TWITTER_BEARER_TOKEN=configured
    ```
 
-3. **Database Setup**
-   - Add Railway PostgreSQL service
-   - Run database migrations
-   - Seed with initial data
+3. **✅ Database Setup Complete**
+   - Production PostgreSQL service active
+   - Database migrations completed
+   - Initial data seeded
 
-## Ready URLs
-- Frontend: `https://trenchwars.wtf`
-- Backend API: `https://api.trenchwars.wtf`
+## 🌐 Live Production URLs
+- **Frontend**: `https://trenchwars.wtf` ✅ LIVE
+- **Backend API**: `https://api.trenchwars.wtf` ✅ LIVE
+- **Smart Contract**: `7KK67M12SbodyTKSetMjMeCWBiDNvB817dkWWvueRbYG` (Solana Devnet)
 
 ## Manual Deployment Commands
 

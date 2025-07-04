@@ -2,122 +2,165 @@
 
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import WojakHUD from './WojakHUD';
+import PepeCorner from './PepeCorner';
+import BottomHUD from './BottomHUD';
 
 export default function Hero() {
   const { connected } = useWallet();
 
   return (
-    <section className="relative py-8 px-4 overflow-hidden">
-      {/* 🚨 TESTING DEPLOYMENT - TERMINAL CYBERPUNK MODE 🚨 */}
-      <div className="breaking-news mb-6">
-        <div className="breaking-news-ticker">
-          🚨 TERMINAL CYBERPUNK DEPLOYMENT TEST - IF YOU SEE THIS THE NEW CODE IS WORKING 🚨
-        </div>
-      </div>
+    <>
+      {/* Fixed Wojak HUD */}
+      <WojakHUD />
+      
+      {/* Floating Pepe Corner */}
+      <PepeCorner />
 
-      <div className="relative max-w-6xl mx-auto">
-        {/* Terminal Header */}
-        <div className="terminal-window mb-8">
-          <div className="terminal-header">
-            TRENCHWARS.WTF - DEPLOYMENT_TEST.EXE
-          </div>
-          <div className="terminal-content">
-            <div className="terminal-flicker">
-              TESTING TERMINAL CYBERPUNK DEPLOYMENT...
+      <section className="relative py-12 px-4 overflow-hidden">
+        <div className="relative max-w-6xl mx-auto">
+          {/* Main Title - Schizo Style */}
+          <div className="text-center mb-16">
+            <h1 className="text-6xl sm:text-8xl lg:text-9xl font-black mb-8">
+              <span className="chaos-shift text-[var(--pump-green)] terminal-flicker font-mono">
+                TRENCH
+              </span>
+              <br />
+              <span className="text-[var(--explosive-red)] glitch-text font-mono">
+                WARS
+              </span>
+            </h1>
+            
+            <div className="battle-card max-w-4xl mx-auto mb-12">
+              <div className="card-header">
+                <span className="war-number">MAXIMUM SCHIZO MODE</span>
+                <span className="timer terminal-flicker">ACTIVE</span>
+              </div>
+              
+              <div className="text-center">
+                <div className="text-2xl font-black text-[var(--corruption-yellow)] mb-4 glitch-text">
+                  💀 ENTER THE TRENCHES 💀
+                </div>
+                <div className="text-lg text-[var(--pure-white)] mb-6">
+                  Where memes battle for supremacy and anons fight for financial freedom
+                </div>
+                
+                {!connected ? (
+                  <div className="space-y-6">
+                    <div className="text-[var(--explosive-red)] font-black text-xl terminal-flicker">
+                      ⚠️ WALLET_CONNECTION_REQUIRED.EXE ⚠️
+                    </div>
+                    <WalletMultiButton className="btn-send-it !text-xl !px-16 !py-6 !rounded-xl" />
+                    <div className="text-sm text-[var(--pump-green)] font-mono">
+                      Connect to join the chaos
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    <div className="text-[var(--pump-green)] font-black text-xl chaos-pulse">
+                      ✅ ANON_AUTHENTICATED.OK ✅
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <button className="pepe-bet">
+                        🐸 ENTER BATTLE
+                      </button>
+                      <button className="btn-send-it">
+                        💎 VIEW WARS
+                      </button>
+                      <button className="shib-bet">
+                        📊 LEADERBOARD
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="mt-4 text-sm">
-              <div className="greentext-item">be anon</div>
-              <div className="greentext-item">deploy terminal cyberpunk UI</div>
-              <div className="greentext-item">check if vercel picks up changes</div>
-              <div className="greentext-item">profit or get rekt</div>
+          </div>
+
+          {/* Battle Stats Display */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+            <div className="battle-card">
+              <div className="card-header">
+                <span className="war-number">ACTIVE WARS</span>
+                <span className="timer">🔥</span>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-black text-[var(--pump-green)] mb-2 chaos-pulse">
+                  12
+                </div>
+                <div className="text-sm text-[var(--pure-white)]">
+                  Meme coins battling
+                </div>
+              </div>
+            </div>
+
+            <div className="battle-card">
+              <div className="card-header">
+                <span className="war-number">TOTAL VOLUME</span>
+                <span className="timer">💰</span>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-black text-[var(--corruption-yellow)] mb-2 terminal-flicker">
+                  $420K
+                </div>
+                <div className="text-sm text-[var(--pure-white)]">
+                  SOL wagered
+                </div>
+              </div>
+            </div>
+
+            <div className="battle-card">
+              <div className="card-header">
+                <span className="war-number">ANONS REKT</span>
+                <span className="timer">💀</span>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-black text-[var(--explosive-red)] mb-2 glitch-text">
+                  1337
+                </div>
+                <div className="text-sm text-[var(--pure-white)]">
+                  Dreams destroyed
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* How It Works - Greentext Style */}
+          <div className="battle-card mb-16">
+            <div className="card-header">
+              <span className="war-number">HOW_TO_BATTLE.TXT</span>
+              <span className="timer terminal-flicker">README</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <div className="text-[var(--pump-green)] font-mono">
+                  &gt; be anon<br/>
+                  &gt; see epic meme battle<br/>
+                  &gt; choose your fighter<br/>
+                  &gt; place your bet in SOL<br/>
+                  &gt; pray to based gods<br/>
+                  &gt; either moon or get rekt<br/>
+                  &gt; cope with results
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div className="text-[var(--explosive-red)] font-mono">
+                  &gt; WARNING: not financial advice<br/>
+                  &gt; WARNING: maximum degeneracy zone<br/>
+                  &gt; WARNING: diamond hands required<br/>
+                  &gt; WARNING: paper hands will be mocked<br/>
+                  &gt; WARNING: NGMI detector active<br/>
+                  &gt; WARNING: copium not included<br/>
+                  &gt; CAUTION: may cause addiction to chaos
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Main Title - Terminal Style */}
-        <div className="text-center mb-12">
-          <h1 className="text-6xl sm:text-7xl lg:text-9xl font-black mb-6">
-            <span className="chaos-shift terminal-glow font-mono">
-              TERMINAL
-            </span>
-            <br />
-            <span className="text-[var(--explosive-red)] glitch-corruption font-mono">
-              TEST
-            </span>
-          </h1>
-          
-          <div className="terminal-window max-w-3xl mx-auto mb-8">
-            <div className="terminal-content text-lg">
-              <div className="data-point">DEPLOYMENT STATUS: TESTING</div>
-              <div className="mt-2 text-[var(--pump-green)]">
-                [PROTOCOL] CYBERPUNK_THEME_TEST.EXE
-              </div>
-              <div className="text-[var(--shockwave-blue)]">
-                [STATUS] VERCEL_CACHE_BYPASS_ACTIVE
-              </div>
-              <div className="text-[var(--explosive-red)]">
-                [WARNING] MAXIMUM_TERMINAL_MODE
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Connection Status */}
-        {!connected ? (
-          <div className="doom-hud mb-8 max-w-2xl mx-auto">
-            <div className="text-center">
-              <div className="text-[var(--explosive-red)] font-black text-xl mb-4 terminal-flicker">
-                ⚠️ WALLET_NOT_CONNECTED.ERR ⚠️
-              </div>
-              <WalletMultiButton className="btn-send-it !text-black !font-black !text-xl !px-12 !py-6 !rounded-xl" />
-              <div className="terminal-content mt-4">
-                <div className="greentext-item">connect wallet to test deployment</div>
-                <div className="greentext-item">terminal cyberpunk mode active</div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="doom-hud mb-8 max-w-2xl mx-auto">
-            <div className="text-center">
-              <div className="text-[var(--pump-green)] font-black text-xl mb-4 terminal-pulse">
-                ✅ CONNECTION_ESTABLISHED.OK ✅
-              </div>
-              <div className="terminal-content mt-4">
-                <div className="greentext-item">wallet connected successfully</div>
-                <div className="greentext-item">terminal test mode active</div>
-                <div className="greentext-item">deployment verification complete</div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Test Status Display */}
-        <div className="mt-12">
-          <div className="terminal-window max-w-4xl mx-auto">
-            <div className="terminal-header">
-              DEPLOYMENT_TEST_LOG.EXE
-            </div>
-            <div className="doomscroll-feed">
-              <div className="feed-item">
-                <span className="text-[var(--pump-green)]">[SYSTEM]</span> 
-                Terminal cyberpunk theme loaded
-              </div>
-              <div className="feed-item">
-                <span className="text-[var(--shockwave-blue)]">[CSS]</span> 
-                New terminal variables active
-              </div>
-              <div className="feed-item">
-                <span className="text-[var(--explosive-red)]">[DEPLOYMENT]</span> 
-                Vercel cache bypass successful
-              </div>
-              <div className="feed-item">
-                <span className="text-[var(--corruption-yellow)]">[STATUS]</span> 
-                Ready for full terminal implementation
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+      {/* Bottom HUD Panels */}
+      <BottomHUD />
+    </>
   );
 }

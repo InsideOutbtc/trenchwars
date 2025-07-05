@@ -6,95 +6,84 @@ import { useState, useEffect } from 'react';
 
 export default function Header() {
   const { connected, publicKey } = useWallet();
-  const [chaosLevel, setChaosLevel] = useState('MAX');
-  const [rektCount, setRektCount] = useState(420);
-  const [audioStatus, setAudioStatus] = useState('OFF');
-
-  useEffect(() => {
-    const chaosItems = ['MAX', 'ULTRA', 'LEGENDARY', 'GODLIKE'];
-    let index = 0;
-    const chaosInterval = setInterval(() => {
-      setChaosLevel(chaosItems[index % chaosItems.length]);
-      index++;
-    }, 2000);
-    return () => clearInterval(chaosInterval);
-  }, []);
+  const [volume24h] = useState(420690);
+  const [anonsRekt, setAnonsRekt] = useState(1337);
+  const [activeWars] = useState(12);
+  const [balance] = useState(69.420);
 
   useEffect(() => {
     const rektInterval = setInterval(() => {
-      setRektCount(prev => prev + Math.floor(Math.random() * 5));
-    }, 3000);
+      setAnonsRekt(prev => prev + Math.floor(Math.random() * 3 + 1));
+    }, 5000);
     return () => clearInterval(rektInterval);
   }, []);
 
+  const formatNumber = (num: number) => {
+    if (num >= 1000000) return `$${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `$${(num / 1000).toFixed(0)}K`;
+    return `$${num}`;
+  };
+
   return (
-    <>
-      {/* Fixed Terminal Header */}
-      <div className="schizo-header">
-        <div className="header-status">
-          <div className="status-item">
-            <span>💀</span>
-            <span className="chaos-level">CHAOS_LVL: {chaosLevel}</span>
+    <header className="trading-header">
+      <div className="header-left">
+        <div className="brand-section">
+          <div className="logo">💀 TRENCHWARS</div>
+          <div className="tagline">Degen Prediction Market</div>
+        </div>
+        
+        <nav className="main-nav">
+          <button className="nav-item active">
+            <span className="nav-icon">⚔️</span>
+            <span className="nav-label">Wars</span>
+          </button>
+          <button className="nav-item">
+            <span className="nav-icon">👑</span>
+            <span className="nav-label">Leaderboard</span>
+          </button>
+          <button className="nav-item">
+            <span className="nav-icon">📊</span>
+            <span className="nav-label">Stats</span>
+          </button>
+        </nav>
+      </div>
+
+      <div className="header-center">
+        <div className="global-stats">
+          <div className="stat-item">
+            <div className="stat-value text-lg">{formatNumber(volume24h)}</div>
+            <div className="stat-label text-xs">24h Volume</div>
           </div>
-          <div className="status-item">
-            <span className="rekt-count">REKT_COUNT: {rektCount}</span>
+          <div className="stat-item">
+            <div className="stat-value text-lg">{anonsRekt.toLocaleString()}</div>
+            <div className="stat-label text-xs">Anons Rekt</div>
           </div>
-          <div className="status-item">
-            <span>🔊</span>
-            <span className="wallet-status">{audioStatus}</span>
-          </div>
-          <div className="status-item">
-            <span>[WALLET]</span>
-            <span className="wallet-status">
-              {connected && publicKey ? 'CONNECTED' : 'DISCONNECTED'}
-            </span>
+          <div className="stat-item">
+            <div className="stat-value text-lg">{activeWars}</div>
+            <div className="stat-label text-xs">Active Wars</div>
           </div>
         </div>
       </div>
 
-      {/* Breaking News Ticker */}
-      <div className="breaking-ticker">
-        <div className="ticker-content">
-          🚨 BREAKING: PEPE ARMY MOBILIZES | WOJAKS CRYING GLOBALLY | NGMI DETECTED | DIAMOND HANDS PROTOCOL ACTIVATED | MOON MISSION LAUNCHING | MAXIMUM CHAOS ENGAGED
+      <div className="header-right">
+        <div className="user-section">
+          {connected && (
+            <div className="balance-display">
+              <div className="balance-value text-lg">{balance.toFixed(3)} SOL</div>
+              <div className="balance-label text-xs">Available</div>
+            </div>
+          )}
+          
+          {connected && publicKey ? (
+            <button className="wallet-btn">
+              <span className="wallet-status"></span>
+              {publicKey.toString().slice(0, 4)}...{publicKey.toString().slice(-4)}
+            </button>
+          ) : (
+            <WalletMultiButton className="wallet-btn" />
+          )}
         </div>
       </div>
-
-      {/* Navigation Bar */}
-      <header className="bg-[var(--midnight-black)]/95 backdrop-blur-sm border-b-2 border-[var(--pump-green)] sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex items-center space-x-4">
-              <div className="text-2xl font-black text-[var(--pump-green)] terminal-flicker">
-                ⚔️ TRENCHWARS
-              </div>
-            </div>
-
-            {/* Navigation */}
-            <nav className="hidden md:flex items-center space-x-6">
-              <a href="#wars" className="text-[var(--pump-green)] hover:text-[var(--pure-white)] font-mono font-bold transition-colors">
-                WARS
-              </a>
-              <a href="#leaderboard" className="text-[var(--corruption-yellow)] hover:text-[var(--pure-white)] font-mono font-bold transition-colors">
-                LEADERBOARD
-              </a>
-              <a href="#stats" className="text-[var(--shockwave-blue)] hover:text-[var(--pure-white)] font-mono font-bold transition-colors">
-                STATS
-              </a>
-            </nav>
-
-            {/* Wallet Connection */}
-            <div className="flex items-center space-x-4">
-              {connected && publicKey && (
-                <div className="text-[var(--pump-green)] font-mono text-sm">
-                  {publicKey.toString().slice(0, 4)}...{publicKey.toString().slice(-4)}
-                </div>
-              )}
-              <WalletMultiButton className="!bg-[var(--chaos-gradient)] !border-2 !border-[var(--pump-green)] !text-[var(--midnight-black)] !font-mono !font-black !text-sm hover:!scale-105 transition-all" />
-            </div>
-          </div>
-        </div>
-      </header>
-    </>
+    </header>
   );
 }

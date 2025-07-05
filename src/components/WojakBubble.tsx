@@ -2,6 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { WojakEvents, WojakEventData, useWojakEvents } from '@/utils/wojakEvents';
+import { gameSystem, formatMultiplier, formatStreakDisplay, getStreakEmoji } from '@/utils/gameSystem';
+import { getWojakConfiguration, determineWojakMood, type WojakMood } from '@/utils/wojakImageGenerator';
+import { celebrationSystem, celebrateWin, celebrateAchievement } from '@/utils/celebrationSystem';
 
 interface WojakBubbleProps {
   pnl: number;
@@ -17,7 +20,6 @@ interface ActivityItem {
   value: string;
 }
 
-type WojakMood = 'chad' | 'comfy' | 'neutral' | 'coping' | 'crying';
 
 export default function WojakBubble({ pnl, pnlPercentage, onQuickBet, onViewPortfolio }: WojakBubbleProps) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -26,6 +28,9 @@ export default function WojakBubble({ pnl, pnlPercentage, onQuickBet, onViewPort
   const [showSpeech, setShowSpeech] = useState(false);
   const [speechMessage, setSpeechMessage] = useState('');
   const [showPulse, setShowPulse] = useState(false);
+  const [gameStats, setGameStats] = useState(gameSystem.getStats());
+  const [recentAchievements, setRecentAchievements] = useState<string[]>([]);
+  const [rankInfo, setRankInfo] = useState(gameSystem.getRankInfo());
   const autoCloseTimer = useRef<NodeJS.Timeout | null>(null);
   const speechTimer = useRef<NodeJS.Timeout | null>(null);
   const lastPnl = useRef<number>(pnl);
@@ -40,129 +45,65 @@ export default function WojakBubble({ pnl, pnlPercentage, onQuickBet, onViewPort
     { type: 'win', icon: '🚀', text: 'DOGE pump', value: '+$23.80' },
   ]);
 
-  // Determine wojak mood based on P&L
-  const getWojakMood = (pnlValue: number): WojakMood => {
-    if (pnlValue >= 100) return 'chad';
-    if (pnlValue > 0) return 'comfy';
-    if (pnlValue >= -1) return 'neutral';
-    if (pnlValue >= -50) return 'coping';
-    return 'crying';
-  };
-
-  // Get wojak image source with fallback
-  const getWojakImage = (mood: WojakMood): string => {
-    // Since we don't have actual wojak images, use data URIs for authentic wojak appearance
-    const wojaks = {
-      chad: getWojakDataURI('chad'),
-      comfy: getWojakDataURI('comfy'),
-      neutral: getWojakDataURI('neutral'),
-      coping: getWojakDataURI('coping'),
-      crying: getWojakDataURI('crying')
+  // Game system integration
+  useEffect(() => {
+    const handleStatsUpdate = (stats: any) => {
+      setGameStats(stats);
+      setRankInfo(gameSystem.getRankInfo());
     };
-    return wojaks[mood];
-  };
 
-  // Generate authentic wojak-style SVG as data URI
-  const getWojakDataURI = (mood: WojakMood): string => {
-    let eyeExpression = '';
-    let mouthExpression = '';
-    let extraElements = '';
+    const handleAchievementUnlock = (achievement: any) => {
+      setRecentAchievements(prev => [achievement.id, ...prev.slice(0, 2)]);
+      celebrateAchievement(achievement.id);
+      showSpeechBubble(`Achievement: ${achievement.name}! 🎯`);
+      triggerNotification();
+    };
 
-    switch (mood) {
-      case 'chad':
-        eyeExpression = '<circle cx="22" cy="25" r="1.5" fill="#000"/><circle cx="38" cy="25" r="1.5" fill="#000"/>';
-        mouthExpression = '<path d="M24 35 Q30 32 36 35" stroke="#000" stroke-width="1.5" fill="none"/>';
-        extraElements = '<rect x="20" y="22" width="8" height="4" fill="#000" opacity="0.6" rx="2"/>'; // sunglasses
-        break;
-      case 'comfy':
-        eyeExpression = '<circle cx="22" cy="25" r="2" fill="#000"/><circle cx="38" cy="25" r="2" fill="#000"/>';
-        mouthExpression = '<path d="M24 35 Q30 32 36 35" stroke="#000" stroke-width="1.5" fill="none"/>';
-        break;
-      case 'neutral':
-        eyeExpression = '<circle cx="22" cy="25" r="2" fill="#000"/><circle cx="38" cy="25" r="2" fill="#000"/>';
-        mouthExpression = '<path d="M26 35 Q30 37 34 35" stroke="#000" stroke-width="1.5" fill="none"/>';
-        break;
-      case 'coping':
-        eyeExpression = '<ellipse cx="22" cy="25" rx="3" ry="2" fill="#000"/><ellipse cx="38" cy="25" rx="3" ry="2" fill="#000"/>';
-        mouthExpression = '<path d="M24 37 Q30 40 36 37" stroke="#000" stroke-width="1.5" fill="none"/>';
-        extraElements = '<path d="M20 20 Q25 15 30 20" stroke="#87CEEB" stroke-width="0.5" opacity="0.7"/>'; // sweat
-        break;
-      case 'crying':
-        eyeExpression = '<circle cx="22" cy="25" r="2" fill="#000"/><circle cx="38" cy="25" r="2" fill="#000"/>';
-        mouthExpression = '<path d="M24 40 Q30 45 36 40" stroke="#000" stroke-width="1.5" fill="none"/>';
-        extraElements = '<path d="M22 28 Q20 35 18 42" stroke="#87CEEB" stroke-width="1.5"/><path d="M38 28 Q40 35 42 42" stroke="#87CEEB" stroke-width="1.5"/>'; // tears
-        break;
-    }
-
-    const svg = `<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-      <!-- Head shape (balding) -->
-      <ellipse cx="30" cy="35" rx="18" ry="22" fill="#fdbcb4"/>
-      
-      <!-- Hair on sides/back -->
-      <path d="M12 25 Q10 20 15 18 Q20 15 25 18" fill="#8B4513"/>
-      <path d="M48 25 Q50 20 45 18 Q40 15 35 18" fill="#8B4513"/>
-      <path d="M15 45 Q12 50 15 52 Q20 55 25 52" fill="#8B4513"/>
-      <path d="M45 45 Q48 50 45 52 Q40 55 35 52" fill="#8B4513"/>
-      
-      <!-- Large nose -->
-      <ellipse cx="30" cy="30" rx="3" ry="5" fill="#e6a89a"/>
-      
-      <!-- Eyes -->
-      ${eyeExpression}
-      
-      <!-- Mouth -->
-      ${mouthExpression}
-      
-      <!-- Additional mood elements -->
-      ${extraElements}
-      
-      <!-- Face outline -->
-      <ellipse cx="30" cy="35" rx="18" ry="22" fill="none" stroke="#d4a574" stroke-width="0.5"/>
-    </svg>`;
-
-    return `data:image/svg+xml;base64,${btoa(svg)}`;
-  };
-
-  // Get mood text and messages
-  const getMoodData = (mood: WojakMood) => {
-    const moodData = {
-      chad: {
-        vibe: 'CHAD',
-        cope: 5,
-        message: 'ANON IS ABSOLUTELY BASED! 🚀',
-        speech: 'HOLY SHIT ANON! ABSOLUTE CHAD!'
-      },
-      comfy: {
-        vibe: 'COMFY',
-        cope: 25,
-        message: 'Feeling comfy anon 😊',
-        speech: 'Comfy vibes, keep it up anon!'
-      },
-      neutral: {
-        vibe: 'NEUTRAL',
-        cope: 50,
-        message: 'Staying neutral... for now',
-        speech: 'Crabbing sideways... classic'
-      },
-      coping: {
-        vibe: 'COPING',
-        cope: 75,
-        message: 'Diamond hands anon... diamond hands 💎',
-        speech: 'This is fine... totally fine... 💎🙌'
-      },
-      crying: {
-        vibe: 'REKT',
-        cope: 95,
-        message: 'NGMI... but maybe next time? 😭',
-        speech: 'JUST... why anon... why... 😭'
+    const handleWin = (data: any) => {
+      celebrateWin(data.amount, data.streak);
+      if (data.isNewRecord) {
+        showSpeechBubble(`NEW RECORD STREAK! ${data.streak}W! 🏆`);
       }
     };
-    return moodData[mood];
+
+    const handleRankChange = (data: any) => {
+      showSpeechBubble(`RANK UP! ${data.newRank}! ${data.level.icon}`);
+      triggerNotification();
+    };
+
+    gameSystem.on('stats_updated', handleStatsUpdate);
+    gameSystem.on('achievement_unlocked', handleAchievementUnlock);
+    gameSystem.on('win', handleWin);
+    gameSystem.on('rank_changed', handleRankChange);
+
+    return () => {
+      gameSystem.off('stats_updated', handleStatsUpdate);
+      gameSystem.off('achievement_unlocked', handleAchievementUnlock);
+      gameSystem.off('win', handleWin);
+      gameSystem.off('rank_changed', handleRankChange);
+    };
+  }, []);
+
+  // Get comprehensive mood data including streak and multiplier info
+  const getMoodData = (mood: WojakMood) => {
+    const wojakConfig = getWojakConfiguration(mood);
+    const currentLevel = rankInfo.current;
+    
+    return {
+      vibe: currentLevel.name.toUpperCase(),
+      cope: Math.max(0, Math.min(100, 100 - (gameStats.currentStreak * 10))),
+      message: wojakConfig.message,
+      speech: wojakConfig.message,
+      multiplier: gameStats.streakMultiplier,
+      streak: gameStats.currentStreak,
+      rank: currentLevel,
+      image: wojakConfig.imageSrc
+    };
   };
 
-  // Handle mood changes and P&L tracking
+  // Handle mood changes and P&L tracking with game system integration
   useEffect(() => {
-    const newMood = getWojakMood(pnl);
+    const newMood = gameSystem.getCurrentWojakMood(pnl);
     const oldMood = currentMood;
     const pnlDifference = pnl - lastPnl.current;
 
@@ -172,11 +113,13 @@ export default function WojakBubble({ pnl, pnlPercentage, onQuickBet, onViewPort
     // Emit portfolio update event
     wojakEvents.trigger.portfolioUpdate(pnl, pnlPercentage);
 
-    // Check for significant P&L changes
+    // Check for significant P&L changes and process as game results
     if (Math.abs(pnlDifference) >= 50) {
       if (pnlDifference > 0) {
+        gameSystem.processBetResult(true, Math.abs(pnlDifference), pnlDifference);
         wojakEvents.trigger.bigWin(pnlDifference);
       } else {
+        gameSystem.processBetResult(false, Math.abs(pnlDifference), 0);
         wojakEvents.trigger.bigLoss(pnlDifference);
       }
     }
@@ -186,7 +129,7 @@ export default function WojakBubble({ pnl, pnlPercentage, onQuickBet, onViewPort
       wojakEvents.trigger.moodChange(oldMood, newMood);
 
       // Trigger notifications for significant changes
-      const significantChanges: WojakMood[] = ['chad', 'crying'];
+      const significantChanges: WojakMood[] = ['chad', 'crying', 'god', 'diamond', 'whale'];
       if (significantChanges.includes(newMood)) {
         triggerNotification();
         showSpeechBubble(getMoodData(newMood).speech);
@@ -197,7 +140,7 @@ export default function WojakBubble({ pnl, pnlPercentage, onQuickBet, onViewPort
         }
       }
     }
-  }, [pnl, pnlPercentage, currentMood, isExpanded, wojakEvents]);
+  }, [pnl, pnlPercentage, currentMood, isExpanded, wojakEvents, gameStats]);
 
   // Event system integration
   useEffect(() => {
@@ -340,8 +283,10 @@ export default function WojakBubble({ pnl, pnlPercentage, onQuickBet, onViewPort
   };
 
   const moodData = getMoodData(currentMood);
-  const wojakImage = getWojakImage(currentMood);
   const isPositive = pnl >= 0;
+  const nextLevel = rankInfo.next;
+  const progressToNext = nextLevel ? rankInfo.progress : 1;
+  const winsToNext = nextLevel ? nextLevel.minStreak - gameStats.currentStreak : 0;
 
   if (!isExpanded) {
     // Collapsed bubble state
@@ -355,7 +300,7 @@ export default function WojakBubble({ pnl, pnlPercentage, onQuickBet, onViewPort
           {showNotification && <div className="notification-dot" />}
           
           <div className="bubble-content">
-            <img src={wojakImage} className="bubble-wojak" alt="Wojak" />
+            <img src={moodData.image} className="bubble-wojak" alt="Wojak" />
             <div className="bubble-info">
               <span className={`bubble-pnl ${isPositive ? 'positive' : 'negative'}`}>
                 {formatPnL(pnl)}
@@ -383,7 +328,7 @@ export default function WojakBubble({ pnl, pnlPercentage, onQuickBet, onViewPort
     <div className="wojak-panel">
       <div className="panel-header">
         <div className="header-left">
-          <img src={wojakImage} className="panel-wojak" alt="Wojak" />
+          <img src={moodData.image} className="panel-wojak" alt="Wojak" />
           <div className="header-info">
             <span className="panel-title">Portfolio Status</span>
             <span className="panel-subtitle">{moodData.message}</span>
@@ -431,23 +376,87 @@ export default function WojakBubble({ pnl, pnlPercentage, onQuickBet, onViewPort
         </div>
         <div className="status-row">
           <span className="status-label">Streak:</span>
-          <span className="status-value">3W</span>
+          <span className="status-value streak-display">
+            {getStreakEmoji(gameStats.currentStreak)} {formatStreakDisplay(gameStats.currentStreak)}
+          </span>
+        </div>
+        <div className="status-row">
+          <span className="status-label">Multiplier:</span>
+          <span className="status-value multiplier-display">
+            {formatMultiplier(gameStats.streakMultiplier)}
+          </span>
+        </div>
+        <div className="status-row">
+          <span className="status-label">Rank:</span>
+          <span className="status-value rank-display" style={{ color: rankInfo.current.color }}>
+            {rankInfo.current.icon} {rankInfo.current.name}
+          </span>
         </div>
       </div>
 
+      {/* Streak Progress */}
+      {nextLevel && (
+        <div className="progress-section">
+          <h4 className="section-title">Progress to {nextLevel.name}</h4>
+          <div className="progress-bar-container">
+            <div className="progress-bar">
+              <div 
+                className="progress-fill" 
+                style={{ 
+                  width: `${progressToNext * 100}%`,
+                  backgroundColor: nextLevel.color
+                }}
+              />
+            </div>
+            <div className="progress-text">
+              {winsToNext} wins to {nextLevel.icon} {nextLevel.name}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Recent Achievements */}
+      {recentAchievements.length > 0 && (
+        <div className="achievement-section">
+          <h4 className="section-title">Recent Achievements</h4>
+          <div className="achievement-list">
+            {recentAchievements.map((achievementId, index) => {
+              const achievement = gameSystem.getAchievements().find(a => a.id === achievementId);
+              if (!achievement) return null;
+              return (
+                <div key={index} className="achievement-item">
+                  <span className="achievement-icon">{achievement.icon}</span>
+                  <div className="achievement-info">
+                    <span className="achievement-name">{achievement.name}</span>
+                    <span className="achievement-reward">{achievement.reward}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Recent Activity */}
       <div className="activity-section">
-        <h4 className="section-title">Recent Activity</h4>
-        <div className="activity-list">
-          {activityItems.map((item, index) => (
-            <div key={index} className={`activity-item ${item.type}`}>
-              <span className="activity-icon">{item.icon}</span>
-              <span className="activity-text">{item.text}</span>
-              <span className={`activity-value ${item.type === 'win' ? 'positive' : 'negative'}`}>
-                {item.value}
-              </span>
-            </div>
-          ))}
+        <h4 className="section-title">Game Stats</h4>
+        <div className="stats-grid">
+          <div className="stat-item">
+            <span className="stat-value">{gameStats.totalWins}</span>
+            <span className="stat-label">Wins</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-value">{gameStats.totalLosses}</span>
+            <span className="stat-label">Losses</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-value">{gameStats.bestStreak}</span>
+            <span className="stat-label">Best Streak</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-value">{gameStats.achievementsUnlocked.length}</span>
+            <span className="stat-label">Achievements</span>
+          </div>
         </div>
       </div>
 

@@ -7,7 +7,12 @@ import BattleCard from './BattleCard';
 import BettingModal from './BettingModal';
 import LiveFeed from './LiveFeed';
 import WojakBubble from './WojakBubble';
+import GameificationOverlay from './GameificationOverlay';
+import StreakDisplay from './StreakDisplay';
+import WojakTest from './WojakTest';
 import { triggerWojakEvent } from '@/utils/wojakEvents';
+import { gameSystem } from '@/utils/gameSystem';
+import '../styles/gamification.css';
 
 const mockBattles = [
   {
@@ -94,6 +99,7 @@ export default function Hero() {
   const { connected } = useWallet();
   const [selectedToken, setSelectedToken] = useState<any>(null);
   const [isBettingModalOpen, setIsBettingModalOpen] = useState(false);
+  const [isGameOverlayOpen, setIsGameOverlayOpen] = useState(false);
   const [pnl, setPnl] = useState(42.69); // Mock P&L for Wojak
   const [pnlPercentage, setPnlPercentage] = useState(6.4); // Mock percentage
   const balance = 69.420; // Mock balance
@@ -121,7 +127,7 @@ export default function Hero() {
     }
   };
 
-  // Simulate P&L changes for demonstration
+  // Simulate P&L changes for demonstration with game system integration
   const simulatePnLChange = () => {
     const change = (Math.random() - 0.5) * 100; // -50 to +50
     const newPnl = pnl + change;
@@ -130,8 +136,12 @@ export default function Hero() {
     setPnl(newPnl);
     setPnlPercentage(newPercentage);
 
+    // Process as game result
+    const didWin = change > 0;
+    gameSystem.processBetResult(didWin, Math.abs(change), didWin ? change : 0);
+
     // Simulate battle outcomes
-    if (Math.random() > 0.5) {
+    if (didWin) {
       triggerWojakEvent.battleWon(Math.abs(change), 'PEPE');
     } else {
       triggerWojakEvent.battleLost(Math.abs(change), 'SHIB');
@@ -144,8 +154,8 @@ export default function Hero() {
   };
 
   const handleViewPortfolio = () => {
-    // Simulate viewing portfolio
-    simulatePnLChange();
+    // Open gamification overlay
+    setIsGameOverlayOpen(true);
   };
 
   return (
@@ -176,11 +186,39 @@ export default function Hero() {
               Connect your wallet to join the chaos.
             </p>
             
-            {!connected && (
-              <div style={{ marginBottom: '32px' }}>
-                <WalletMultiButton className="wallet-btn" />
-              </div>
-            )}
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center', 
+              gap: '16px', 
+              marginBottom: '32px',
+              flexWrap: 'wrap'
+            }}>
+              {!connected && <WalletMultiButton className="wallet-btn" />}
+              
+              <button 
+                className="action-button"
+                onClick={() => setIsGameOverlayOpen(true)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '12px 20px',
+                  background: 'linear-gradient(135deg, #4A9EFF, #00D4AA)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <span style={{ fontSize: '18px' }}>🎮</span>
+                <span>Gamification Hub</span>
+              </button>
+              
+              <StreakDisplay compact={true} showProgress={false} showAchievements={false} />
+            </div>
           </section>
 
           {/* Battle Cards Grid */}
@@ -252,6 +290,9 @@ export default function Hero() {
             </div>
           </section>
 
+          {/* Wojak Test Section */}
+          <WojakTest />
+
           {/* Wojak Demo Section */}
           <section className="battle-card" style={{ marginBottom: '48px' }}>
             <div className="card-header">
@@ -280,6 +321,7 @@ export default function Hero() {
                   const bigWin = Math.random() * 200 + 100;
                   setPnl(bigWin);
                   setPnlPercentage((bigWin / 100) * 100);
+                  gameSystem.processBetResult(true, bigWin, bigWin);
                   triggerWojakEvent.bigWin(bigWin, 'PEPE');
                 }}
               >
@@ -290,10 +332,11 @@ export default function Hero() {
               <button 
                 className="quick-bet-btn"
                 onClick={() => {
-                  const bigLoss = -(Math.random() * 200 + 100);
-                  setPnl(bigLoss);
-                  setPnlPercentage((bigLoss / 100) * 100);
-                  triggerWojakEvent.bigLoss(bigLoss, 'SHIB');
+                  const bigLoss = Math.random() * 200 + 100;
+                  setPnl(-bigLoss);
+                  setPnlPercentage((-bigLoss / 100) * 100);
+                  gameSystem.processBetResult(false, bigLoss, 0);
+                  triggerWojakEvent.bigLoss(-bigLoss, 'SHIB');
                 }}
                 style={{ background: 'var(--red-negative)' }}
               >
@@ -303,7 +346,10 @@ export default function Hero() {
               
               <button 
                 className="quick-bet-btn"
-                onClick={() => triggerWojakEvent.achievement('Demo Master')}
+                onClick={() => {
+                  gameSystem.unlockAchievementById('FIRST_BLOOD');
+                  triggerWojakEvent.achievement('Demo Master');
+                }}
                 style={{ background: 'var(--purple-special)' }}
               >
                 <span className="bet-icon">🎯</span>
@@ -312,11 +358,14 @@ export default function Hero() {
               
               <button 
                 className="quick-bet-btn"
-                onClick={simulatePnLChange}
+                onClick={() => {
+                  gameSystem.simulateRandomBet();
+                  simulatePnLChange();
+                }}
                 style={{ background: 'var(--blue-neutral)' }}
               >
                 <span className="bet-icon">🎲</span>
-                <span className="bet-label">Random P&L</span>
+                <span className="bet-label">Random Bet</span>
               </button>
             </div>
           </section>
@@ -335,6 +384,12 @@ export default function Hero() {
           balance={balance}
         />
       )}
+
+      {/* Gamification Overlay */}
+      <GameificationOverlay 
+        isVisible={isGameOverlayOpen}
+        onClose={() => setIsGameOverlayOpen(false)}
+      />
     </>
   );
 }

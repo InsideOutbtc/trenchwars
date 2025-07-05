@@ -6,7 +6,6 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import BattleCard from './BattleCard';
 import BettingModal from './BettingModal';
 import LiveFeed from './LiveFeed';
-import { WojakPanel } from './WojakSVG';
 import WojakBubble from './WojakBubble';
 import { triggerWojakEvent } from '@/utils/wojakEvents';
 
@@ -151,9 +150,6 @@ export default function Hero() {
 
   return (
     <>
-      {/* Wojak Panel */}
-      <WojakPanel pnl={pnl} />
-      
       {/* Wojak Bubble System */}
       <WojakBubble 
         pnl={pnl}

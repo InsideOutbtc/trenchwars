@@ -622,19 +622,7 @@
   color: var(--text-tertiary);
 }
 
-/* Wojak Panel */
-.wojak-panel {
-  background: var(--bg-card);
-  border: 1px solid var(--border-default);
-  border-radius: 12px;
-  padding: 20px;
-  position: fixed;
-  top: 100px;
-  right: 24px;
-  width: 280px;
-  z-index: 40;
-  transition: all 0.2s var(--ease-out-cubic);
-}
+/* Old Wojak Panel styles removed - using new WojakBubble system */
 
 .panel-header {
   display: flex;
@@ -1169,13 +1157,7 @@
     justify-content: center;
   }
   
-  .wojak-panel {
-    position: relative;
-    top: auto;
-    right: auto;
-    width: 100%;
-    margin-bottom: 24px;
-  }
+  /* Old wojak panel mobile styles removed */
   
   .fighters-grid {
     grid-template-columns: 1fr;

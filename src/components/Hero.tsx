@@ -7,6 +7,8 @@ import BattleCard from './BattleCard';
 import BettingModal from './BettingModal';
 import LiveFeed from './LiveFeed';
 import { WojakPanel } from './WojakSVG';
+import WojakBubble from './WojakBubble';
+import { triggerWojakEvent } from '@/utils/wojakEvents';
 
 const mockBattles = [
   {
@@ -93,7 +95,8 @@ export default function Hero() {
   const { connected } = useWallet();
   const [selectedToken, setSelectedToken] = useState<any>(null);
   const [isBettingModalOpen, setIsBettingModalOpen] = useState(false);
-  const [pnl] = useState(42.69); // Mock P&L for Wojak
+  const [pnl, setPnl] = useState(42.69); // Mock P&L for Wojak
+  const [pnlPercentage, setPnlPercentage] = useState(6.4); // Mock percentage
   const balance = 69.420; // Mock balance
 
   const handleBetClick = (tokenSymbol: string) => {
@@ -113,13 +116,51 @@ export default function Hero() {
         odds: odds
       });
       setIsBettingModalOpen(true);
+
+      // Trigger new battle event for wojak
+      triggerWojakEvent.newBattle(`${battle.tokenA.symbol} vs ${battle.tokenB.symbol}`);
     }
+  };
+
+  // Simulate P&L changes for demonstration
+  const simulatePnLChange = () => {
+    const change = (Math.random() - 0.5) * 100; // -50 to +50
+    const newPnl = pnl + change;
+    const newPercentage = ((newPnl / 100) * 100); // Simple percentage calc
+    
+    setPnl(newPnl);
+    setPnlPercentage(newPercentage);
+
+    // Simulate battle outcomes
+    if (Math.random() > 0.5) {
+      triggerWojakEvent.battleWon(Math.abs(change), 'PEPE');
+    } else {
+      triggerWojakEvent.battleLost(Math.abs(change), 'SHIB');
+    }
+  };
+
+  const handleQuickBet = () => {
+    setIsBettingModalOpen(true);
+    triggerWojakEvent.achievement('Quick Bet Master');
+  };
+
+  const handleViewPortfolio = () => {
+    // Simulate viewing portfolio
+    simulatePnLChange();
   };
 
   return (
     <>
       {/* Wojak Panel */}
       <WojakPanel pnl={pnl} />
+      
+      {/* Wojak Bubble System */}
+      <WojakBubble 
+        pnl={pnl}
+        pnlPercentage={pnlPercentage}
+        onQuickBet={handleQuickBet}
+        onViewPortfolio={handleViewPortfolio}
+      />
 
       <main style={{ paddingTop: '80px', paddingBottom: '40px' }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 24px' }}>
@@ -212,6 +253,75 @@ export default function Hero() {
                   <li>• May cause addiction to chaos</li>
                 </ul>
               </div>
+            </div>
+          </section>
+
+          {/* Wojak Demo Section */}
+          <section className="battle-card" style={{ marginBottom: '48px' }}>
+            <div className="card-header">
+              <div className="war-meta">
+                <span className="war-id text-xs">DEMO</span>
+                <span className="badge">WOJAK SYSTEM</span>
+              </div>
+            </div>
+            
+            <div className="battle-overview">
+              <h3 className="battle-title text-xl">Test Wojak Companion</h3>
+              <p style={{ color: 'var(--text-secondary)', marginTop: '8px' }}>
+                Try the interactive wojak bubble in the bottom-right corner!
+              </p>
+            </div>
+
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+              gap: '16px',
+              marginTop: '24px'
+            }}>
+              <button 
+                className="quick-bet-btn primary"
+                onClick={() => {
+                  const bigWin = Math.random() * 200 + 100;
+                  setPnl(bigWin);
+                  setPnlPercentage((bigWin / 100) * 100);
+                  triggerWojakEvent.bigWin(bigWin, 'PEPE');
+                }}
+              >
+                <span className="bet-icon">🚀</span>
+                <span className="bet-label">Trigger Big Win</span>
+              </button>
+              
+              <button 
+                className="quick-bet-btn"
+                onClick={() => {
+                  const bigLoss = -(Math.random() * 200 + 100);
+                  setPnl(bigLoss);
+                  setPnlPercentage((bigLoss / 100) * 100);
+                  triggerWojakEvent.bigLoss(bigLoss, 'SHIB');
+                }}
+                style={{ background: 'var(--red-negative)' }}
+              >
+                <span className="bet-icon">💀</span>
+                <span className="bet-label">Trigger Big Loss</span>
+              </button>
+              
+              <button 
+                className="quick-bet-btn"
+                onClick={() => triggerWojakEvent.achievement('Demo Master')}
+                style={{ background: 'var(--purple-special)' }}
+              >
+                <span className="bet-icon">🎯</span>
+                <span className="bet-label">Achievement</span>
+              </button>
+              
+              <button 
+                className="quick-bet-btn"
+                onClick={simulatePnLChange}
+                style={{ background: 'var(--blue-neutral)' }}
+              >
+                <span className="bet-icon">🎲</span>
+                <span className="bet-label">Random P&L</span>
+              </button>
             </div>
           </section>
         </div>

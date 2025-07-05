@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Crypto Meme Wars - Battle of the Tokens",
-  description: "Bet on which crypto will have the biggest gains in epic weekly battles",
+  title: "TrenchWars - Hyperliquid-Style Prediction Markets",
+  description: "Professional prediction markets combining Hyperliquid's information architecture with authentic crypto meme culture. Where memes meet markets.",
 };
 
 export default function RootLayout({

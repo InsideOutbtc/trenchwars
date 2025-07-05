@@ -28,8 +28,8 @@ export default function Header() {
     <header className="trading-header">
       <div className="header-left">
         <div className="brand-section">
-          <div className="logo">💀 TRENCHWARS</div>
-          <div className="tagline">Degen Prediction Market</div>
+          <div className="logo">⚔️ TRENCHWARS</div>
+          <div className="tagline">Hyperliquid-Style Markets</div>
         </div>
         
         <nav className="main-nav">

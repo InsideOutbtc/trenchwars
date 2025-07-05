@@ -1,6 +1,7 @@
 {
   "name": "trenchwars",
-  "version": "2.0.0",
+  "version": "2.0.0", 
+  "description": "Professional prediction markets combining Hyperliquid's information architecture with authentic crypto meme culture",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
